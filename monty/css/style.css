@@ -1,0 +1,352 @@
+body { background: #9cb8b3; }
+
+.btn {
+  margin-top: 30px;
+
+}
+
+.sim-inp {
+  width: 40px;
+
+}
+
+
+.results{
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+.btn-container {
+    display:flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    width:300px;
+    margin: auto;
+}
+
+.btn-magic{
+  background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 16px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    cursor: pointer;
+    background-color: white;
+    color: black;
+    border: 2px solid #008CBA;
+}
+.btn-magic:hover{
+  background-color: #008CBA;
+    color: white;
+}
+
+.btn-shadow{
+
+  margin-top: 30px;
+  background-color: #24CFF9;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+}
+.btn-shadow:hover{
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+/**
+.door {
+   display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    border: 2px solid black;
+    width: 40px;
+    height: 40px;
+}**/
+
+.hide {
+    display:none;
+}
+.number {
+    text-align: center;
+}
+.prize {
+    font-size:28px;
+    z-index: -5;
+    position: relative;
+    top: 75px;
+}
+.arrow {
+    text-align: center;
+}
+/**
+.doors {
+    display: flex;
+    justify-content: space-between;
+    width: 140px;
+}
+.covered {
+    background-color: blue;
+}**/
+
+.column {
+    display: flex;
+    flex-direction: column;
+}
+
+.disabled {
+  pointer-events: none;
+}
+
+
+.door.selected{
+  border-color: blue;
+}
+.doors {
+  position: relative;
+  display: flex;
+  padding: 20px 20px;
+  width: 850px;
+  margin: auto;
+}
+.door {
+    border: 4px solid white;
+    text-align: center;
+    width: 142px;
+    height: 187px;
+    margin: 0 auto;
+    border-radius: 0%;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    cursor: default;
+}
+.door-wrap {
+    width: 142px;
+    height: 187px;
+    border-radius: 0%;
+    -webkit-perspective: 800px;
+    -moz-perspective: 800px;
+    -o-perspective: 800px;
+    -ms-perspective: 800px;
+    perspective: 800px;
+    -webkit-transition: all 0.4s ease-in-out;
+    -moz-transition: all 0.4s ease-in-out;
+    -o-transition: all 0.4s ease-in-out;
+    -ms-transition: all 0.4s ease-in-out;
+    transition: all 0.4s ease-in-out;
+    top: 20px;
+    left: 20px;
+    background: #f9f9f9;
+}
+.door-itself {
+    position: absolute;
+    width: 110px;
+    height: 150px;
+    border-radius: 0%;
+    -webkit-transform-origin: 125% 40%;
+    -moz-transform-origin: 125% 40%;
+    -o-transform-origin: 125% 40%;
+    -ms-transform-origin: 125% 40%;
+    transform-origin: 125% 40%;
+    -webkit-transition: all 0.4s ease-in-out;
+    -moz-transition: all 0.4s ease-in-out;
+    -o-transition: all 0.4s ease-in-out;
+    -ms-transition: all 0.4s ease-in-out;
+    transition: all 0.4s ease-in-out;
+    -webkit-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
+    -o-transform-style: preserve-3d;
+    -ms-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+}
+.door-itself > div {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 0%;
+    background-position: center center;
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -o-backface-visibility: hidden;
+    -ms-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+.back {
+    -webkit-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
+    -o-transform-style: preserve-3d;
+    -ms-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    -webkit-transform: rotate3d(0, 1, 0, 180deg) translate3d(0, 0, 10px);
+    -moz-transform: rotate3d(0, 1, 0, 180deg) translate3d(0, 0, 10px);
+    -o-transform: rotate3d(0, 1, 0, 180deg) translate3d(0, 0, 10px);
+    -ms-transform: rotate3d(0, 1, 0, 180deg) translate3d(0, 0, 10px);
+    transform: rotate3d(0, 1, 0, 180deg) translate3d(0, 0, 10px);
+    background: #000;
+}
+.back:after {
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  position: absolute;
+  right: 0;
+  top: 0;
+  content: " ";
+  height: 100%;
+  width: 10px;
+  -webkit-transform: rotate3d(0, 1, 0, -90deg) translate3d(-10px, 0, -10px);
+  -moz-transform: rotate3d(0, 1, 0, -90deg) translate3d(-10px, 0, -10px);
+  -o-transform: rotate3d(0, 1, 0, -90deg) translate3d(-10px, 0, -10px);
+  -ms-transform: rotate3d(0, 1, 0, -90deg) translate3d(-10px, 0, -10px);
+  transform: rotate3d(0, 1, 0, -90deg) translate3d(-10px, 0, -10px);
+  -webkit-transform-origin: 0 0;
+  -moz-transform-origin: 0 0;
+  -o-transform-origin: 0 0;
+  -ms-transform-origin: 0 0;
+  transform-origin: 0 0;
+  background-color: #89401F;
+}
+
+.door:not(.covered) .door-wrap, .door.open .door-wrap {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.8), inset 0 0 3px rgba(115, 114, 23, 0.8);
+}
+.door:not(.covered) .door-itself, .door.open .door-itself {
+    -webkit-transform: rotate3d(0, 1, 0, 150deg);
+    -moz-transform: rotate3d(0, 1, 0, 150deg);
+    -o-transform: rotate3d(0, 1, 0, 150deg);
+    -ms-transform: rotate3d(0, 1, 0, 150deg);
+    transform: rotate3d(0, 1, 0, 150deg);
+}
+.door:not(.covered) .handle, .door.open .handle {
+    -webkit-transform: rotate3d(0, 0, 1, 60deg);
+    -moz-transform: rotate3d(0, , 1, 60deg);
+    -o-transform: rotate3d(0, 0, 1, 60deg);
+    -ms-transform: rotate3d(0, 0, 1, 60deg);
+    transform: rotate3d(0, 0, 1, 60deg);
+}
+.tile {
+  width: 30px;
+  height: 30px;
+  background-color: #935A39;
+  border: 1px solid #6D2604;
+  box-shadow: 0 0 2px 1px #8B4E32;
+}
+.front, .back {
+  padding: 15px;
+  padding-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 110px;
+  height: 150px;
+  background-color: #89401F;
+  position: relative;
+  border: 1px solid black;
+}
+.handle {
+  position: absolute;
+  width: 24px;
+  height: 8px;
+  background-color: #6D2604;
+  top: calc(50% - 4px);
+  left: 10px;
+  border-radius: 50%;
+  border: 1px solid black;
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+  -ms-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+  -webkit-transform-origin: 0 50%;
+  -moz-transform-origin: 0 50%;
+  -o-transform-origin: 0 50%;
+  -ms-transform-origin: 0 50%;
+  transform-origin: 0 50%;
+}
+.handle::after {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background-color: #6D2604;
+  top: calc(50% - 8px);
+  left: -4px;
+  border-radius: 50%;
+  border: 1px solid black;
+  content: "";
+}
+.door .tile:nth-child(5):after {
+  display: block;
+  text-align: center;
+  font-size: 30px;
+  margin-top: -2px;
+  font-family: "arial";
+}
+.door_1 .tile:nth-child(5):after {
+  content: "1";
+}
+.door_2 .tile:nth-child(5):after {
+  content: "2";
+}
+.door_3 .tile:nth-child(5):after {
+  content: "3";
+}
+
+/* custom css*/
+
+.h1-type {
+    font: 6000 2.5em 'Raleway', sans-serif;
+    color: rgba(0,0,0,.5);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: .2em;
+    font-size: 40px
+    top: 20%;
+    width: 100%;
+}
+
+.knockout {
+  background: url(http://apod.nasa.gov/apod/image/0603/coma_misti.jpg) -80px -80px;
+  color: red;
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+  font-weight: bold;
+  font-size: 40px;
+  font-family: arial, helvetica;
+  width: 600px;
+  margin: 25px auto;
+  text-align: center;
+}
+
+.hit-the-floor {
+color: #AAEEFF;
+font-size: 5em;
+font-weight: bold;
+font-family: Helvetica;
+text-shadow: 0 1px 0 #ccc, 0 2px 0 #c9c9c9, 0 3px 0 #bbb, 0 4px 0 #b9b9b9, 0 5px 0 #aaa, 0 6px 1px rgba(0,0,0,.1), 0 0 5px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.3), 0 3px 5px rgba(0,0,0,.2), 0 5px 10px rgba(0,0,0,.25), 0 10px 10px rgba(0,0,0,.2), 0 20px 20px rgba(0,0,0,.15);
+  text-align: center;
+}
+
+.hit-the {
+color: #66ccff
+;
+font-size: 5em;
+font-weight: bold;
+font-family: Helvetica;
+text-shadow: 0 1px 0 #ccc, 0 2px 0 #c9c9c9, 0 3px 0 #bbb, 0 4px 0 #b9b9b9, 0 5px 0 #aaa, 0 6px 1px rgba(0,0,0,.1), 0 0 5px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.3), 0 3px 5px rgba(0,0,0,.2), 0 5px 10px rgba(0,0,0,.25), 0 10px 10px rgba(0,0,0,.2), 0 20px 20px rgba(0,0,0,.15);
+  text-align: center;
+}
+
+.stop{
+  width: 60%
+}

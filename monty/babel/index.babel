@@ -1,0 +1,336 @@
+var seed = function(s) {
+    return function() {
+        s = Math.sin(s) * 10000; return s - Math.floor(s);
+    };
+};
+
+// usage:
+var random1 = seed(Math.random()*100);
+var random2 = seed(random1());
+var random = seed(random2());
+
+
+class Simulator extends React.Component {
+  
+  constructor(props){
+    super(props);
+    this.state = this.initialState();
+  }
+  
+  initialState(sim){
+    return {
+      game : {
+        selected : -1,
+        prize : this.randomize(),
+        closed : -1
+      },
+      results : {
+        tries: 0,
+        prizes: 0
+      },
+      buttons : {
+        keep: true,
+        change: true
+      },
+      stage : "selection",
+      simState : {
+        isSim : sim,
+        stage: "setup",
+        decision: "keep"
+      },
+      simCount : {
+        current:0,
+        total:1
+      }
+    }
+  }
+  setGameState(key, val){
+    var gameState = {
+      selected : this.state.game.selected,
+      prize: this.state.game.prize,
+      open: this.state.game.open
+    }
+    
+    gameState[key] = val;
+    this.setState({game:gameState})
+  }
+  
+  randomize(){
+    var p = random() * 3;
+    return  Math.floor(p);
+    
+  }
+  
+  getEmptyDoor(selected){
+    console.log("selected " + selected + " prize " + this.state.game.prize)
+    let doors = [0, 1, 2].filter((el)=>{return el !== selected && el !== this.state.game.prize});
+     
+    if( doors.length == 1 ){ 
+      return doors[0]
+    }
+    else {
+      console.log(doors)
+      return doors[Math.floor(random() * 2)]
+    }
+  
+  }
+  
+  doorClick(ev){
+   console.log("door clicked " + ev.target.id)
+    var id = ev.target.id.substr("door".length);
+    var selected = parseInt(id);
+    var empty = this.getEmptyDoor(selected);
+   
+    this.setState({game:{selected:selected,
+                        prize:this.state.game.prize,
+                        open:empty},
+                  stage: "decision"}, function(){ev.cb && ev.cb.call(this)}.bind(this))
+        
+    
+  }
+  
+  decisionClick(ev){
+    var decision = ev.target.id;
+    var gameState = {
+      open: this.state.game.open,
+      prize: this.state.game.prize
+    }
+    switch(decision){
+      case "keep":
+        gameState.selected = this.state.game.selected;
+        break;
+      case "change":
+        gameState.selected = [0,1,2].filter((el) => { return el != this.state.game.selected && el != this.state.game.open })[0];
+        break;
+    }
+    var correct = this.state.game.prize == gameState.selected;
+    var gameResults = {
+      tries: this.state.results.tries + 1,
+      prizes: this.state.results.prizes + (correct ? 1:0)
+    }
+    var gameStage = "ended";
+    this.setState({
+      game: gameState,
+      results: gameResults,
+      stage: gameStage
+    }, function(){ev.cb && ev.cb.call(this)});
+    
+  }
+  
+  replay(ev){
+    var gameState = {
+      selected: -1,
+      prize: this.randomize(),
+      open: -1
+    }
+    
+    this.setState({game:gameState, stage: "selection"},
+                 function(){ev.cb && ev.cb.call(this)})
+  }
+  
+  reset() {
+    this.setState(this.initialState());
+  }
+  
+  simChange(ev){
+    this.setState({simState:{
+      isSim: this.state.simState.isSim,
+      stage: this.state.simState.stage,
+      decision: ev.target.value
+    }})
+  }
+  
+  validateSim(ev){
+    console.log(ev.target.value);
+    var val = ev.target.value;
+    if( val > 300 ) val = 300;
+    else if( val < 1 ) val = 1;
+    this.setState({simCount: {
+      current : this.state.simCount.current,
+      total : val
+    }})
+  }
+  
+  startSimulation(){
+    this.setState({
+      simState:{ 
+        isSim: true,
+        stage: "simulating",
+        decision: this.state.simState.decision
+      }
+    },
+     function(){
+      this.replay({cb:function(){
+                setTimeout(this.simulate.bind(this),200)
+              }.bind(this)})
+    }.bind(this))
+    
+  }
+  
+  simulate(){
+    
+    function reSim(){
+      if( this.state.simCount.total > this.state.simCount.current ){
+        setTimeout(
+          function(){
+            this.replay({cb:
+              function(){
+                setTimeout(this.simulate.bind(this),500)
+              }.bind(this)
+                        })
+            
+          }.bind(this),500)
+      } else {
+        this.setState({
+          simState:{
+            isSim: false,
+            stage: "setup",
+            decision: this.state.simState.decision
+          },
+          simCount: {
+            total: this.state.simCount.total,
+            current: 0
+          }
+        })
+      }
+    }
+    function decide(){
+      this.decisionClick.call(this,{
+        target: {
+          id: this.state.simState.decision
+        },
+        cb: function(){
+          this.setState({
+            simCount:{
+              total: this.state.simCount.total,
+              current: this.state.simCount.current + 1
+            }
+          }, reSim.bind(this))
+        }
+      })
+    }
+    
+    var selection = random() * 3;
+    this.doorClick.call(this, {
+      target: {
+        id: 'door'+selection
+      },
+      cb : function(){
+        setTimeout(decide.bind(this), 500)
+      }.bind(this)
+    })
+    
+    
+  }
+  
+  stop(){
+    
+  }
+  render(){
+    var doors = [0,1,2]
+    var inSim = this.state.simState.isSim;
+    return(
+      <div>
+      
+      <div id='doors' className='doors'>
+
+       {doors.map(function(child, ind) { 
+          var selected = (ind == this.state.game.selected);
+          var covered = ind != this.state.game.open && this.state.stage !== "ended";
+          var disabled = this.state.stage !== "selection" || inSim;
+      console.log(selected)
+          return (<Door id={ind} doorClick={this.doorClick.bind(this)} arrow={selected} covered={covered} disable={disabled} isPrize={this.state.game.prize == ind} stage={this.state.stage}/>) 
+              }.bind(this) ) } 
+
+      </div>
+      <div  className="btn-container">
+        <button id="keep" disabled={this.state.stage !== "decision" || inSim} onClick={this.decisionClick.bind(this)}>keep</button>
+        <button id="change" disabled={this.state.stage !== "decision" || inSim} onClick={this.decisionClick.bind(this)}>change</button>
+      </div>
+      <div  className="btn-container">
+        <button className="btn" id="reset" onClick={this.reset.bind(this)} disabled={inSim}>reset</button>
+        <button className="btn" id="replay" onClick={this.replay.bind(this)} disabled={inSim}>replay</button>
+      </div>
+      
+      <div>
+          <input type="radio" name="decision" checked={this.state.simState.decision == "keep"} onChange={this.simChange.bind(this)} value="keep" disabled={inSim}>Keep</input>
+          <input type="radio" name="decision" checked={this.state.simState.decision == "change"} onChange={this.simChange.bind(this)} value="change" disabled={inSim}>Change</input>
+      </div>
+      <div  className="btn-container">  
+        <input id="sim-inp" className="sim-inp" type="number" name="quantity" value={this.state.simCount.total} min="1" max="300" onChange={this.validateSim.bind(this)} disabled={this.state.simState.stage !== "setup"}></input>
+        <button className="sim-btn" id="simulate" onClick={this.startSimulation.bind(this)} disabled={inSim}>simulate</button>
+      </div>
+      
+      <div>Remaining Simulations: {this.state.simState.isSim ? this.state.simCount.total - this.state.simCount.current : 'NA'}</div>
+     
+      <div className="results">RESULTS</div>
+      <div><span>Tries: </span><span id="tries">{this.state.results.tries}</span></div>
+      <div><span>Prizes: </span><span id="prizes">{this.state.results.prizes}</span></div>
+    </div>  
+    )
+  }
+}
+class Door extends React.Component{
+  
+  constructor(props){
+    super(props);
+   
+    
+  }
+  
+  doorClick(ev){
+    console.log("door has be en clicked");
+    this.props.doorClick({target:{id:"door"+this.props.id}});
+  }
+
+  render(){
+    var classes = "door";
+    var text = "";
+    if(this.props.covered) classes += " covered";
+    if(this.props.disable) classes += " disabled";
+    if(this.props.arrow) classes += " selected";
+    console.log(classes)
+    if(this.props.isPrize) text = "Prize!";
+    return (<div id={"door"+this.props.id} className={classes + " door_" + (this.props.id+1)} onClick={this.doorClick.bind(this)}>
+      <div className="door-wrap">
+        <div className="door-itself">
+          <div className="front">
+            <div className="tile"></div>
+            <div className="tile"></div>
+            <div className="tile"></div>
+            <div className="tile"></div>
+            <div className="tile"></div>
+            <div className="tile"></div>
+            <div className="tile"></div>
+            <div className="tile"></div>
+            <div className="tile"></div>
+            <div className="tile"></div>
+            <div className="tile"></div>
+            <div className="tile"></div>
+            <div className="handle"></div>
+          </div>
+          <div className="back">
+            <div className="tile"></div>
+            <div className="tile"></div>
+            <div className="tile"></div>
+            <div className="tile"></div>
+            <div className="tile"></div>
+            <div className="tile"></div>
+            <div className="tile"></div>
+            <div className="tile"></div>
+            <div className="tile"></div>
+            <div className="tile"></div>
+            <div className="tile"></div>
+            <div className="tile"></div>
+          </div>
+        </div>
+        <span className={"prize " + (this.props.stage == "ended" ? "" : "hide")}>{text}</span>
+      </div>
+    </div>)
+  }
+}
+
+
+React.render(
+  <Simulator />, document.getElementById('simulator')
+);
